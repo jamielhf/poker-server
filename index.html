@@ -5,7 +5,6 @@
 
 
 <script>
-  location= 'wx://'
 let ws = new WebSocket("ws://localhost:3000/ws/channel?channel=123");
     ws.onopen = function (event) {
       console.log("Send Text WS was opened.");
@@ -23,7 +22,6 @@ let ws = new WebSocket("ws://localhost:3000/ws/channel?channel=123");
     setTimeout(function () {
       if (ws.readyState === WebSocket.OPEN) {
         ws.send("Hello WebSocket, I'm a text message.");
-        ws.close()
       } else {
         console.log("WebSocket instance wasn't ready...");
       }

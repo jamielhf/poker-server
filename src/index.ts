@@ -16,6 +16,9 @@ app.ws.use(
     ctx.websocket.on("message", function (message) {
       console.log(message.toString(), channel);
     });
+    ctx.websocket.on("open", function (message: any) {
+      console.log("open", message);
+    });
     ctx.websocket.on("close", () => {
       console.log("前端关闭了websocket");
     });
