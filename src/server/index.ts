@@ -2,7 +2,7 @@ import Koa = require("koa");
 import redis from "../modules/redis";
 import { IBaseResp, EStatus } from "../interface";
 import { generateUUID } from "../utils/utils";
-
+const room: Record<string, string[]> = {};
 export default {
   register: async (ctx: Koa.Context) => {
     const { username, password } = ctx.request.body as Record<string, string>;
@@ -41,5 +41,25 @@ export default {
       }
     }
     ctx.body = resp;
+  },
+  websocket: async (ctx: Koa.Context) => {
+    const { channel } = ctx.query;
+    const nChannel = String(channel);
+    if (nChannel) {
+      if (!room[nChannel]) {
+        room[nChannel] = [];
+      }
+      room[nChannel].push();
+    }
+    ctx.websocket.send("Hello World");
+    ctx.websocket.on("message", function (message) {
+      console.log(message.toString(), channel);
+    });
+    ctx.websocket.on("open", function (message: any) {
+      console.log("open", message);
+    });
+    ctx.websocket.on("close", () => {
+      console.log("前端关闭了websocket");
+    });
   },
 };
