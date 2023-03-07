@@ -3,8 +3,20 @@
 
 
 
-
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script>
+
+$.post(
+ 'http://localhost:3000/poker/login',
+  {
+    username:2,
+  },
+  (res)=>{
+    console.log(res)
+  }
+ )
+
+
 let ws = new WebSocket("ws://localhost:3000/ws/channel?channel=123");
     ws.onopen = function (event) {
       console.log("Send Text WS was opened.");

@@ -1,16 +1,26 @@
 import Koa = require("koa");
 import websockify = require("koa-websocket");
 import * as route from "koa-route";
-const app = websockify(new Koa());
-// Note it's app.ws.use and not app.use
-app.ws.use(function (ctx, next) {
-  // return `next` to pass the context (ctx) on to the next ws middleware
-  return next();
-});
+import { redisUrl } from "./config";
+import bodyParser = require("koa-bodyparser");
+import { IBaseResp, EStatus } from "./interface";
+import redis from "./modules/redis";
+import server from "./server/index";
 
+redis.initRedis();
+const app = websockify(new Koa());
+app.use(bodyParser());
+app.use(async (ctx, next) => {
+  ctx.set("Access-Control-Allow-Origin", "*");
+  ctx.set("Access-Control-Allow-Headers", "Content-Type");
+  ctx.set("Access-Control-Allow-Methods", "POST");
+  await next();
+});
+app.use(route.post("/poker/register", server.register));
+app.use(route.post("/poker/login", server.login));
 // Using routes
 app.ws.use(
-  route.all("/ws/channel", function (ctx) {
+  route.all("/ws/channel", async function (ctx) {
     const { channel } = ctx.query;
     ctx.websocket.send("Hello World");
     ctx.websocket.on("message", function (message) {
@@ -24,5 +34,4 @@ app.ws.use(
     });
   })
 );
-
 app.listen(3000);
